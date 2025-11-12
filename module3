@@ -1,0 +1,44 @@
+import java.io.*;
+import java.net.*;
+import java.sql.*;
+import java.util.*;
+import javax.swing.*;
+import java.awt.FlowLayout;
+
+/* ==========================================================
+   MODULE 3: GENERICS & MULTI-THREADING (UNIT III)
+   ========================================================== */
+
+class GenericList<T> {
+    private List<T> items = new ArrayList<>();
+
+    public void addItem(T item) {
+        items.add(item);
+    }
+
+    public List<T> getItems() {
+        return items;
+    }
+}
+
+class QuizThread extends Thread {
+    private Student student;
+    private List<Question> questions;
+
+    public QuizThread(Student student, List<Question> questions) {
+        this.student = student;
+        this.questions = questions;
+    }
+
+    @Override
+    public void run() {
+        for (Question q : questions) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        System.out.println(student + " completed quiz (thread simulation).");
+    }
+}
