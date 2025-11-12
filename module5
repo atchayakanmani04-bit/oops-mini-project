@@ -1,0 +1,79 @@
+import java.io.*;
+import java.net.*;
+import java.sql.*;
+import java.util.*;
+import javax.swing.*;
+import java.awt.FlowLayout;
+/* ==========================================================
+   MODULE 5: GUI PROGRAMMING (UNIT V)
+   ========================================================== */
+
+class QuizForm extends JFrame {
+    JTextArea questionArea;
+    JTextField answerField;
+    JButton nextButton;
+    JLabel scoreLabel;
+
+    private List<Question> questions;
+    private Student student;
+    private int currentIndex = 0;
+    private int totalMarks = 0;
+
+    public QuizForm(Student s, List<Question> qs) {
+        this.student = s;
+        this.questions = qs;
+        for (Question q : qs) totalMarks += q.marks;
+
+        setTitle("Quiz and Assessment System");
+        setLayout(new FlowLayout());
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        questionArea = new JTextArea(4, 30);
+        questionArea.setEditable(false);
+        answerField = new JTextField(20);
+        nextButton = new JButton("Next");
+        scoreLabel = new JLabel("Score: 0");
+
+        add(questionArea);
+        add(answerField);
+        add(nextButton);
+        add(scoreLabel);
+
+        showQuestion();
+
+        nextButton.addActionListener(e -> handleAnswer());
+
+        setSize(430, 270);
+        setVisible(true);
+    }
+
+    private void showQuestion() {
+        if (currentIndex < questions.size()) {
+            Question q = questions.get(currentIndex);
+            questionArea.setText("Q" + (currentIndex + 1) + ": " + q.questionText);
+            answerField.setText("");
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Quiz completed!\nYour Score: " + student.getScore() + " out of " + totalMarks);
+            FileHandler.saveResult(student, totalMarks);
+            DBConnector.saveToDB(student, totalMarks);
+            dispose();
+        }
+    }
+
+    private void handleAnswer() {
+        try {
+            String ans = answerField.getText();
+            QuizUtility.validateAnswer(ans);
+            Question q = questions.get(currentIndex);
+            if (q.evaluate(ans)) {
+                student.updateScore(q.marks);
+            }
+            scoreLabel.setText("Score: " + student.getScore());
+            currentIndex++;
+            showQuestion();
+        } catch (InvalidAnswerException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+}
