@@ -1,0 +1,34 @@
+import java.io.*;
+import java.net.*;
+import java.sql.*;
+import java.util.*;
+import javax.swing.*;
+import java.awt.FlowLayout;
+/* ==========================================================
+   MODULE 2: EXCEPTION HANDLING & FILE I/O (UNIT II)
+   ========================================================== */
+
+class InvalidAnswerException extends Exception {
+    public InvalidAnswerException(String msg) {
+        super(msg);
+    }
+}
+
+class QuizUtility {
+    public static void validateAnswer(String ans) throws InvalidAnswerException {
+        if (ans == null || ans.trim().isEmpty()) {
+            throw new InvalidAnswerException("Answer cannot be empty!");
+        }
+    }
+}
+
+// FileHandler for saving quiz results using I/O Streams
+class FileHandler {
+    public static void saveResult(Student s, int totalMarks) {
+        try (FileWriter fw = new FileWriter("results.txt", true)) {
+            fw.write(s.toString() + " out of " + totalMarks + System.lineSeparator());
+        } catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
+        }
+    }
+}
