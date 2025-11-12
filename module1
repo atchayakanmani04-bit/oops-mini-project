@@ -1,0 +1,61 @@
+import java.io.*;
+import java.net.*;
+import java.sql.*;
+import java.util.*;
+import javax.swing.*;
+import java.awt.FlowLayout;
+/* ==========================================================
+   MODULE 1: CORE OOP SYSTEM (UNIT I)
+   ========================================================== */
+
+// Abstract class representing a Question
+abstract class Question {
+    protected String questionText;
+    protected int marks;
+
+    public Question(String questionText, int marks) {
+        this.questionText = questionText;
+        this.marks = marks;
+    }
+
+    public abstract boolean evaluate(String answer);
+}
+
+// Subclass for MCQ Question
+class MCQQuestion extends Question {
+    private String correctAnswer;
+
+    public MCQQuestion(String questionText, int marks, String correctAnswer) {
+        super(questionText, marks);
+        this.correctAnswer = correctAnswer;
+    }
+
+    @Override
+    public boolean evaluate(String answer) {
+        return correctAnswer.equalsIgnoreCase(answer.trim());
+    }
+}
+
+// Student class (Encapsulation, Constructors, Methods)
+class Student {
+    private String name;
+    private int totalScore;
+
+    public Student(String name) {
+        this.name = name;
+        this.totalScore = 0;
+    }
+
+    public void updateScore(int marks) {
+        totalScore += marks;
+    }
+
+    public int getScore() {
+        return totalScore;
+    }
+
+    @Override
+    public String toString() {
+        return "Student: " + name + ", Score: " + totalScore;
+    }
+}
