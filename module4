@@ -1,0 +1,45 @@
+import java.io.*;
+import java.net.*;
+import java.sql.*;
+import java.util.*;
+import javax.swing.*;
+import java.awt.FlowLayout;
+
+/* ==========================================================
+   MODULE 4: NETWORKING & JDBC (UNIT IV)
+   ========================================================== */
+
+class QuizServer {
+    public static void startServer() {
+        try (ServerSocket server = new ServerSocket(9999)) {
+            System.out.println("Server started on port 9999");
+            Socket client = server.accept();
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+            out.println("Connected to Quiz Server!");
+            server.close();
+        } catch (IOException e) {
+            System.out.println("Server Error: " + e.getMessage());
+        }
+    }
+}
+
+class DBConnector {
+    public static Connection connect() throws SQLException {
+        String url = "jdbc:mysql://localhost:3306/quizdb";
+        String user = "root";
+        String pass = "password";
+        return DriverManager.getConnection(url, user, pass);
+    }
+
+    public static void saveToDB(Student student, int totalMarks) {
+        try (Connection con = connect()) {
+            PreparedStatement ps = con.prepareStatement("INSERT INTO results(name, score) VALUES (?, ?)");
+            ps.setString(1, student.toString() + " out of " + totalMarks);
+            ps.setInt(2, student.getScore());
+            ps.executeUpdate();
+            System.out.println("Data saved to database!");
+        } catch (SQLException e) {
+            System.out.println("Database Error: " + e.getMessage());
+        }
+    }
+}
