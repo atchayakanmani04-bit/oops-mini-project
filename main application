@@ -1,0 +1,40 @@
+import java.io.*;
+import java.net.*;
+import java.sql.*;
+import java.util.*;
+import javax.swing.*;
+import java.awt.FlowLayout;
+/* ==========================================================
+   MAIN APPLICATION – INTEGRATION OF ALL MODULES
+   ========================================================== */
+
+public class QuizSystem {
+    public static void main(String[] args) {
+
+        // --- UNIT I: OOP Setup ---
+        GenericList<Question> questionList = new GenericList<>();
+
+        // Add 10 MCQs
+        questionList.addItem(new MCQQuestion("1. What is OOP in Java?", 5, "Object Oriented Programming"));
+        questionList.addItem(new MCQQuestion("2. Which keyword is used for inheritance?", 5, "extends"));
+        questionList.addItem(new MCQQuestion("3. Which class is the parent of all Java classes?", 5, "Object"));
+        questionList.addItem(new MCQQuestion("4. Which keyword prevents method overriding?", 5, "final"));
+        questionList.addItem(new MCQQuestion("5. What is used to handle exceptions?", 5, "try catch"));
+        questionList.addItem(new MCQQuestion("6. Which interface is used for multithreading?", 5, "Runnable"));
+        questionList.addItem(new MCQQuestion("7. Which package is used for GUI components?", 5, "javax.swing"));
+        questionList.addItem(new MCQQuestion("8. What does JDBC stand for?", 5, "Java Database Connectivity"));
+        questionList.addItem(new MCQQuestion("9. Which class handles input and output streams?", 5, "IOStream"));
+        questionList.addItem(new MCQQuestion("10. What keyword is used to create objects in Java?", 5, "new"));
+
+        Student student = new Student("Atchaya");
+
+        // --- UNIT III: Multithreading Simulation ---
+        new QuizThread(student, questionList.getItems()).start();
+
+        // --- UNIT IV: Server Networking (runs in background) ---
+        new Thread(() -> QuizServer.startServer()).start();
+
+        // --- UNIT V: Launch GUI ---
+        javax.swing.SwingUtilities.invokeLater(() -> new QuizForm(student, questionList.getItems()));
+    }
+}
